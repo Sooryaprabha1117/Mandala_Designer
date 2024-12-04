@@ -73,7 +73,6 @@ const MandalaDesigner = () => {
     }
   };
 
-  // Touch event handlers
   const handleTouchDraw = (event) => {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext("2d");
@@ -124,8 +123,11 @@ const MandalaDesigner = () => {
         minHeight: "100vh",
         width: "100%",
         padding: 0,
-        margin: "0 auto", 
-        display: "block"
+        margin: "0 auto",
+        display: "block",
+        '@media (max-width: 768px)': {
+          padding: 2,
+        },
       }}
     >
       <GlobalStyles
@@ -143,7 +145,12 @@ const MandalaDesigner = () => {
           }
         }}
       />
-      <Box display="flex" flexDirection="column" alignItems="center" sx={{ padding: 1 }}>
+      <Box
+        display="flex"
+        flexDirection="column"
+        alignItems="center"
+        sx={{ padding: 1 }}
+      >
         <Box display="flex" justifyContent="center" mb={4}>
           <img
             src={LOGO}
@@ -154,6 +161,7 @@ const MandalaDesigner = () => {
               display: "block",
               marginTop: "-50px",
               marginBottom: "-68px",
+              maxWidth: "100%",  // Make image responsive
             }}
           />
         </Box>
@@ -163,65 +171,70 @@ const MandalaDesigner = () => {
           justifyContent="space-between"
           width="100%"
           mb={2}
+          sx={{
+            flexDirection: { xs: 'column', sm: 'row' }, // Stack buttons on small screens
+            alignItems: { xs: 'center', sm: 'initial' },  // Center align buttons on small screens
+            gap: 2,
+          }}
         >
-         
+          <Button
+            variant="contained"
+            onClick={() => setIsErasing(!isErasing)}
+            sx={{
+              backgroundColor: "#001E12",
+              border: "2px solid #F7BE69",
+              "&:hover": {
+                backgroundColor: "#F9D38D",
+                border: "2px solid #F7BE69",
+                color: "#001E12",
+                fontWeight: "bold",
+              },
+              minWidth: "200px",
+              width: "100%",  // Make buttons responsive
+            }}
+          >
+            {isErasing ? "Disable Eraser" : "Enable Eraser"}
+          </Button>
 
-  <Button
-    variant="contained"
-    onClick={() => setIsErasing(!isErasing)}
-    sx={{
-      backgroundColor: "#001E12",
-      border: "2px solid #F7BE69",
-      "&:hover": {
-        backgroundColor: "#F9D38D",
-        border: "2px solid #F7BE69",
-        color: "#001E12",
-        fontWeight: "bold",
-      },
-      minWidth: "200px", // Ensure consistent width
-    }}
-  >
-    {isErasing ? "Disable Eraser" : "Enable Eraser"}
-  </Button>
+          <Button
+            variant="contained"
+            onClick={clearCanvas}
+            sx={{
+              backgroundColor: "#001E12",
+              border: "2px solid #F7BE69",
+              "&:hover": {
+                backgroundColor: "#F9D38D",
+                border: "2px solid #F7BE69",
+                color: "#001E12",
+                fontWeight: "bolder",
+              },
+              minWidth: "200px",
+              width: "100%",
+            }}
+          >
+            Clear Canvas
+          </Button>
 
-  <Button
-    variant="contained"
-    onClick={clearCanvas}
-    sx={{
-      backgroundColor: "#001E12",
-      border: "2px solid #F7BE69",
-      "&:hover": {
-        backgroundColor: "#F9D38D",
-        border: "2px solid #F7BE69",
-        color: "#001E12",
-        fontWeight: "bolder",
-      },
-      minWidth: "200px", // Ensure consistent width
-    }}
-  >
-    Clear Canvas
-  </Button>
-
-  <Button
-    color="contained"
-    onClick={handleExport}
-    sx={{
-      backgroundColor: "#001E12",
-      border: "2px solid #F7BE69",
-      color: "#ffffff",
-      "&:hover": {
-        backgroundColor: "#F9D38D",
-        border: "2px solid #F7BE69",
-        color: "#001E12",
-        fontWeight: "bolder",
-      },
-      minWidth: "200px", // Ensure consistent width
-    }}
-  >
-    Export Design
-  </Button>
-</Box>
-
+          <Button
+            color="contained"
+            onClick={handleExport}
+            sx={{
+              backgroundColor: "#001E12",
+              border: "2px solid #F7BE69",
+              color: "#ffffff",
+              "&:hover": {
+                backgroundColor: "#F9D38D",
+                border: "2px solid #F7BE69",
+                color: "#001E12",
+                fontWeight: "bolder",
+              },
+              minWidth: "200px",
+              width: "100%",
+            }}
+          >
+            Export Design
+          </Button>
+        </Box>
 
         <canvas
           ref={canvasRef}
@@ -231,118 +244,146 @@ const MandalaDesigner = () => {
             border: "1px solid #F7BE69",
             borderRadius: 8,
             backgroundColor: "#001E12",
+            maxWidth: "100%", // Ensure canvas is responsive
           }}
           onMouseMove={handleMouseDraw}
-          onTouchMove={handleTouchDraw}  // Handle touch move
-          onTouchStart={handleTouchDraw}  // Handle touch start
+          onTouchMove={handleTouchDraw}
+          onTouchStart={handleTouchDraw}
         />
 
-       <Box
-          mt={3}
-          display="flex"
-          justifyContent="space-between"
-          width="100%"
-          maxWidth={400}
-        >
-          <Box>
-            <Typography gutterBottom sx={{ color: "#F7BE69" }}>Symmetry Segments</Typography>
-            <Slider
-              value={segments}
-              onChange={(e, value) => setSegments(value)}
-              min={4}
-              max={16}
-              step={1}
-              valueLabelDisplay="auto"
-              sx={{
-                color: "#F7BE69", // Set the slider color to #F7BE69
-                "& .MuiSlider-thumb": {
-                  backgroundColor: "#F7BE69", // Set the thumb color to #F7BE69
-                },
-                "& .MuiSlider-rail": {
-                  backgroundColor: "#F7BE69", // Optional: You can set the rail color if you want to change it too
-                }
-              }}
-            />
-          </Box>
-
-          <Box>
-            <Typography gutterBottom sx={{ color: "#F7BE69" }}>Brush Size</Typography>
-            <Slider
-              value={brushRadius}
-              onChange={(e, value) => setBrushRadius(value)}
-              min={1}
-              max={10}
-              step={1}
-              valueLabelDisplay="auto"
-              sx={{
-                color: "#F7BE69", // Set the slider color to #F7BE69
-                "& .MuiSlider-thumb": {
-                  backgroundColor: "#F7BE69", // Set the thumb color to #F7BE69
-                },
-                "& .MuiSlider-rail": {
-                  backgroundColor: "#ccc", // Optional: You can set the rail color if you want to change it too
-                }
-              }}
-              
-            />
-          </Box>
-        </Box>
-
-        <Box
-          mt={3}
-          display="flex"
-          justifyContent="space-between"
-          width="100%"
-          maxWidth={400}
-        >
-          <Box>
-            <Typography gutterBottom sx={{ color: "#F7BE69" }}>Eraser Size</Typography>
-            <Slider
-              value={eraserSize}
-              onChange={(e, value) => setEraserSize(value)}
-              min={1}
-              max={10}
-              step={1}
-              valueLabelDisplay="auto"
-              sx={{
-                color: "#F7BE69", // Set the slider color to #F7BE69
-                "& .MuiSlider-thumb": {
-                  backgroundColor: "#F7BE69", // Set the thumb color to #F7BE69
-                },
-                "& .MuiSlider-rail": {
-                  backgroundColor: "#ccc", // Optional: You can set the rail color if you want to change it too
-                }
-              }}
-            />
-          </Box>
-
-          <Box>
-            <Typography gutterBottom sx={{ color: "#F7BE69" }}>Brush Color</Typography>
-            <input
-              type="color"
-              value={color}
-              onChange={(e) => setColor(e.target.value)}
-              style={{ width: "100%", padding: 5 ,backgroundColor: "#F7BE69"}}
-            />
-            <Box
+<Box
+  mt={3}
+  display="flex"
+  justifyContent="space-between"
+  width="100%"
+  maxWidth={400}
+  sx={{
+    flexDirection: { xs: 'column', sm: 'row' }, // Stack sliders on small screens and row on larger screens
+    gap: 2,
+  }}
+>
+  {/* Symmetry Segments */}
+  <Box sx={{ width: '100%' }}>
+    <Typography gutterBottom sx={{ color: "#F7BE69" }}>Symmetry Segments</Typography>
+    <Slider
+      value={segments}
+      onChange={(e, value) => setSegments(value)}
+      min={4}
+      max={16}
+      step={1}
+      valueLabelDisplay="auto"
       sx={{
-        position: 'fixed',
-        bottom: 10,  // Adjust the bottom distance from the screen
-        right: 10,   // Adjust the right distance from the screen
-        zIndex: 1000,  // Ensure it appears above other content
-        padding: '10px',
-        borderRadius: '8px',
-         // Optional: adds shadow for a floating effect
+        color: "#F7BE69", 
+        "& .MuiSlider-thumb": {
+          backgroundColor: "#F7BE69", 
+        },
+        "& .MuiSlider-rail": {
+          backgroundColor: "#F7BE69", 
+        }
       }}
-    >
-      <img 
-        src={LOGO2} // Replace with your image URL
-        alt= "IMAGE"
-        style={{ width: '140px', height: '140px', objectFit: 'cover',paddingTop:"10px", borderRadius: '50%' }}  // Styling the image
-      />
-    </Box>
-          </Box>
-        </Box>
+    />
+  </Box>
+
+  {/* Brush Size */}
+  <Box sx={{ width: '100%' }}>
+    <Typography gutterBottom sx={{ color: "#F7BE69" }}>Brush Size</Typography>
+    <Slider
+      value={brushRadius}
+      onChange={(e, value) => setBrushRadius(value)}
+      min={2}
+      max={20}
+      step={1}
+      valueLabelDisplay="auto"
+      sx={{
+        color: "#F7BE69", 
+        "& .MuiSlider-thumb": {
+          backgroundColor: "#F7BE69", 
+        },
+        "& .MuiSlider-rail": {
+          backgroundColor: "#F7BE69", 
+        }
+      }}
+    />
+  </Box>
+</Box>
+
+{/* Second Row: Eraser Size and Brush Color */}
+<Box
+  mt={3}
+  display="flex"
+  justifyContent="space-between"
+  width="100%"
+  maxWidth={400}
+  sx={{
+    flexDirection: { xs: 'column', sm: 'row' }, // Stack sliders on small screens and row on larger screens
+    gap: 2,
+  }}
+>
+  {/* Eraser Size */}
+  <Box sx={{ width: '100%' }}>
+    <Typography gutterBottom sx={{ color: "#F7BE69" }}>Eraser Size</Typography>
+    <Slider
+      value={eraserSize}
+      onChange={(e, value) => setEraserSize(value)}
+      min={1}
+      max={10}
+      step={1}
+      valueLabelDisplay="auto"
+      sx={{
+        color: "#F7BE69", // Set the slider color to #F7BE69
+        "& .MuiSlider-thumb": {
+          backgroundColor: "#F7BE69", // Set the thumb color to #F7BE69
+        },
+        "& .MuiSlider-rail": {
+          backgroundColor: "#ccc", // Optional: You can set the rail color if you want to change it too
+        }
+      }}
+    />
+  </Box>
+
+  {/* Brush Color */}
+  <Box sx={{ width: '100%' }}>
+    <Typography gutterBottom sx={{ color: "#F7BE69" }}>Brush Color</Typography>
+    <input
+      type="color"
+      value={color}
+      onChange={(e) => setColor(e.target.value)}
+      style={{
+        width: '100%',
+        padding: 5,
+        backgroundColor: "#F7BE69"
+      }}
+    />
+  </Box>
+</Box>
+
+{/* Floating Image */}
+<Box
+  sx={{
+    position: 'fixed',
+    bottom: 1,  // Adjust the bottom distance from the screen
+    right: 1,   // Adjust the right distance from the screen
+    zIndex: 1000,  // Ensure it appears above other content
+    padding: '10px',
+    borderRadius: '8px',
+    boxShadow: '0px 0px 10px rgba(0,0,0,0.1)', // Optional: adds shadow for a floating effect
+  }}
+>
+  <img 
+    src={LOGO2} // Replace with your image URL
+    alt="IMAGE"
+    style={{
+      width: '100px',
+      height: '140px',
+      objectFit: 'cover',
+      paddingTop: "10px",
+      borderRadius: '50%',
+      maxWidth: '100%', // Ensure the image is responsive
+      height: 'auto' // Maintain aspect ratio of the image
+    }}
+  />
+</Box>
+
       </Box>
     </Container>
   );
