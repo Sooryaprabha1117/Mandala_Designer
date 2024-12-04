@@ -73,33 +73,7 @@ const MandalaDesigner = () => {
     }
   };
 
-  const handleTouchDraw = (event) => {
-    const canvas = canvasRef.current;
-    const ctx = canvas.getContext("2d");
-    const rect = canvas.getBoundingClientRect();
-
-    const centerX = canvas.width / 2;
-    const centerY = canvas.height / 2;
-
-    const touch = event.touches[0];  // Get the first touch point
-    const x = touch.clientX - rect.left;
-    const y = touch.clientY - rect.top;
-
-    for (let i = 0; i < segments; i++) {
-      const angle = (2 * Math.PI * i) / segments;
-
-      ctx.save();
-      ctx.translate(centerX, centerY);
-      ctx.rotate(angle);
-      ctx.translate(-centerX, -centerY);
-
-      ctx.beginPath();
-      ctx.arc(x, y, isErasing ? eraserSize : brushRadius, 0, Math.PI * 2);
-      ctx.fillStyle = isErasing ? "#001E12" : color;
-      ctx.fill();
-      ctx.restore();
-    }
-  };
+  
 
   const clearCanvas = () => {
     const canvas = canvasRef.current;
@@ -115,6 +89,78 @@ const MandalaDesigner = () => {
     link.href = canvas.toDataURL("image/png");
     link.click();
   };
+  const handleTouchStart = (event) => {
+    event.preventDefault();
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext("2d");
+    const rect = canvas.getBoundingClientRect();
+    const centerX = canvas.width / 2;
+    const centerY = canvas.height / 2;
+  
+    const touch = event.touches[0];  // Get the first touch point
+    const x = touch.clientX - rect.left;
+    const y = touch.clientY - rect.top;
+  
+    for (let i = 0; i < segments; i++) {
+      const angle = (2 * Math.PI * i) / segments;
+  
+      ctx.save();
+      ctx.translate(centerX, centerY);
+      ctx.rotate(angle);
+      ctx.translate(-centerX, -centerY);
+  
+      ctx.beginPath();
+      ctx.arc(x, y, isErasing ? eraserSize : brushRadius, 0, Math.PI * 2);
+      ctx.fillStyle = isErasing ? "#001E12" : color;
+      ctx.fill();
+      ctx.restore();
+    }
+  };
+  
+  const handleTouchMove = (event) => {
+    event.preventDefault();
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext("2d");
+    const rect = canvas.getBoundingClientRect();
+    const centerX = canvas.width / 2;
+    const centerY = canvas.height / 2;
+  
+    const touch = event.touches[0];  // Get the first touch point
+    const x = touch.clientX - rect.left;
+    const y = touch.clientY - rect.top;
+  
+    for (let i = 0; i < segments; i++) {
+      const angle = (2 * Math.PI * i) / segments;
+  
+      ctx.save();
+      ctx.translate(centerX, centerY);
+      ctx.rotate(angle);
+      ctx.translate(-centerX, -centerY);
+  
+      ctx.beginPath();
+      ctx.arc(x, y, isErasing ? eraserSize : brushRadius, 0, Math.PI * 2);
+      ctx.fillStyle = isErasing ? "#001E12" : color;
+      ctx.fill();
+      ctx.restore();
+    }
+  };
+  
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (canvas) {
+      // Add touch event listeners to improve touch drawing smoothness
+      canvas.addEventListener("touchstart", handleTouchStart);
+      canvas.addEventListener("touchmove", handleTouchMove, { passive: false });
+      canvas.addEventListener("touchend", () => {
+        // Handle touch end (optional: add cleanup)
+      });
+  
+      // Cleanup on unmount
+      
+    }
+  }, );
+  
+  
 
   return (
     <Container
@@ -237,19 +283,20 @@ const MandalaDesigner = () => {
         </Box>
 
         <canvas
-          ref={canvasRef}
-          width="500"
-          height="500"
-          style={{
-            border: "1px solid #F7BE69",
-            borderRadius: 8,
-            backgroundColor: "#001E12",
-            maxWidth: "100%", // Ensure canvas is responsive
-          }}
-          onMouseMove={handleMouseDraw}
-          onTouchMove={handleTouchDraw}
-          onTouchStart={handleTouchDraw}
-        />
+  ref={canvasRef}
+  width="500"
+  height="500"
+  style={{
+    border: "1px solid #F7BE69",
+    borderRadius: 8,
+    backgroundColor: "#001E12",
+    maxWidth: "100%", // Ensure canvas is responsive
+  }}
+  onMouseMove={handleMouseDraw}
+  onTouchMove={handleTouchMove}
+  onTouchStart={handleTouchStart}  // Ensure this event handler is also calling the correct function
+/>
+
 
 <Box
   mt={3}
