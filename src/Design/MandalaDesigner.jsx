@@ -146,19 +146,17 @@ const MandalaDesigner = () => {
   };
   
   useEffect(() => {
-    const canvas = canvasRef.current;
-    if (canvas) {
-      // Add touch event listeners to improve touch drawing smoothness
-      canvas.addEventListener("touchstart", handleTouchStart);
-      canvas.addEventListener("touchmove", handleTouchMove, { passive: false });
-      canvas.addEventListener("touchend", () => {
-        // Handle touch end (optional: add cleanup)
-      });
-  
-      // Cleanup on unmount
-      
-    }
-  }, );
+  const canvas = canvasRef.current;
+  if (canvas) {
+    canvas.addEventListener("touchstart", handleTouchStart);
+    canvas.addEventListener("touchmove", handleTouchMove, { passive: false });
+    return () => {
+      canvas.removeEventListener("touchstart", handleTouchStart);
+      canvas.removeEventListener("touchmove", handleTouchMove);
+    };
+  }
+}, []);
+
   
   
 
